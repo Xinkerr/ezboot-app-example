@@ -1,0 +1,7 @@
+.vscode
+DebugConfig
+obj
+list
+JLinkLog.txt
+**/*.uvguix.*
+*.uvoptx
