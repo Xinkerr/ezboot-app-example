@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "main.h": "c",
+        "ringbuffer.h": "c",
+        "ymodem.h": "c",
+        "board.h": "c"
+    }
+}
