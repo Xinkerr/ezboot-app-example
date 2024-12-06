@@ -83,7 +83,7 @@ void rt_hw_board_init(void)
 #include <ringbuffer.h>
 
 static ringbuffer_t rx_rb;
-static uint8_t rx_buf[256];
+static uint8_t rx_buf[512];
 
 uint8_t uart_rx_buffer[1];
 static UART_HandleTypeDef* pUartHandle;
@@ -109,11 +109,6 @@ static int uart_init(void)
 INIT_BOARD_EXPORT(uart_init);
 
 static bool user_delegate= false;
-static console_user_recv_hook_t recv_user_hook = NULL;
-void console_user_recv_hook_set(console_user_recv_hook_t hook)
-{
-    recv_user_hook = hook;
-}
 void console_user_recv_delegate_set(bool state)
 {
     user_delegate = state;
@@ -125,6 +120,11 @@ void console_user_send(char u8data)
         __HAL_UNLOCK(pUartHandle);
         HAL_UART_Transmit(pUartHandle, (const uint8_t *)&u8data, 1, 1);
     }
+}
+
+__inline uint16_t console_user_rx_get(const void* pdata, uint16_t len)
+{
+    return ringbuffer_get(&rx_rb, (uint8_t*)pdata, len);
 }
 
 void rt_hw_console_output(const char *str)
@@ -155,15 +155,14 @@ char rt_hw_console_getchar(void)
 {
     /* Note: the initial value of ch must < 0 */
     int ch = -1;
+
+    if(user_delegate)
+        return ch;
+
     uint8_t rx_data;
     if(ringbuffer_get(&rx_rb, &rx_data, 1))
     {
-        if(user_delegate && recv_user_hook)
-        {
-            recv_user_hook(rx_data);
-        }
-        else
-            ch = rx_data;
+        ch = rx_data;
     }
     else
     {

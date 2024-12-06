@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F072xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F0xx_HAL_Driver/Inc;../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F0xx/Include;../Drivers/CMSIS/Include;../RT-Thread;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/components/finsh/inc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/msvc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/octal/;..\Middlewares\Third_Party\RealThread_RTOS_RT-Thread\bsp\_template\cubemx_config;..\components\ringbuffer;..\components\ymodem</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F0xx_HAL_Driver/Inc;../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F0xx/Include;../Drivers/CMSIS/Include;../RT-Thread;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/components/finsh/inc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/msvc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/octal/;..\Middlewares\Third_Party\RealThread_RTOS_RT-Thread\bsp\_template\cubemx_config;..\components\ringbuffer;..\components\ymodem;..\ezboot\components\ezb_flash\inc;..\ezboot\components\norflash\inc;..\ezboot\components\ota_mgr\inc;..\ezboot\config;..\ezboot\porting\mcu_header</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2301,6 +2301,41 @@
               <FileName>crc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\components\ymodem\crc.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>ezboot</GroupName>
+          <Files>
+            <File>
+              <FileName>norflash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ezboot\components\norflash\src\norflash.c</FilePath>
+            </File>
+            <File>
+              <FileName>ota_mgr_nvs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ezboot\components\ota_mgr\src\ota_mgr_nvs.c</FilePath>
+            </File>
+            <File>
+              <FileName>ezboot_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\ezboot\config\ezboot_config.h</FilePath>
+            </File>
+            <File>
+              <FileName>ezb_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ezboot\porting\ezb_flash\ezb_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>mcu_header.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\ezboot\porting\mcu_header\mcu_header.h</FilePath>
+            </File>
+            <File>
+              <FileName>norflash_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ezboot\porting\norflash\norflash_spi.c</FilePath>
             </File>
           </Files>
         </Group>
