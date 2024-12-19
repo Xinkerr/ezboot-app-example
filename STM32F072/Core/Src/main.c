@@ -21,12 +21,10 @@
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
-#include <rtthread.h>
-#include <ymd_ota.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <ymd_ota.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,7 +65,6 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -75,7 +72,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  // HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -91,19 +88,19 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_SPI2_Init();
+//  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   ymd_ota_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+//  while (1)
+//  {
     /* USER CODE END WHILE */
-    ymd_ota_process();
-    rt_thread_mdelay(20);
+
     /* USER CODE BEGIN 3 */
-  }
+//  }
   /* USER CODE END 3 */
 }
 

@@ -65,7 +65,7 @@
 //=================================================================BOOT=================================================================================
 //LOG UART
 #define CONFIG_LOG_UART_BAUDRATE            115200
-#define CONFIG_LOG_LEVEL                    0 //LEVEL INF
+#define CONFIG_LOG_LEVEL                    0 //LEVEL OFF
 #define CONFIG_TEST							0
 
 #endif

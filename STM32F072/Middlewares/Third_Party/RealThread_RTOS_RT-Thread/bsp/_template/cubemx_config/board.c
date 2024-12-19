@@ -14,6 +14,7 @@
 #include "board.h"
 #include <stdbool.h>
 #include <usart.h>
+#include <ezboot_config.h>
 
 #if defined(RT_USING_USER_MAIN) && defined(RT_USING_HEAP)
 /*
@@ -52,13 +53,25 @@ static void reboot(uint8_t argc, char **argv)
 MSH_CMD_EXPORT(reboot, Reboot System);
 #endif /* RT_USING_FINSH */
 
+void interrupt_remap(void)       
+{
+	int i;
+    for(i = 0; i < 48; i++)
+    {
+        *((uint32_t*)(SRAM_BASE + (i<<2))) = *(__IO uint32_t*)(APP_ADDRESS + (i<<2));
+    }   
+    __HAL_RCC_SYSCFG_CLK_ENABLE();
+    __HAL_SYSCFG_REMAPMEMORY_SRAM();
+}
+
 /**
  * This function will initial your board.
  */
 void rt_hw_board_init(void)
 {
+    interrupt_remap();
     extern void SystemClock_Config(void);
-    
+
     HAL_Init();
     SystemClock_Config();
     SystemCoreClockUpdate();
