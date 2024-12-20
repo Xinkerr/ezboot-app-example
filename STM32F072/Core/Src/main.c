@@ -24,7 +24,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <ezboot_config.h>
 #include <ymd_ota.h>
+#include <rtthread.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -91,16 +93,18 @@ int main(void)
 //  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   ymd_ota_init();
+  rt_kprintf("SW VERSION:0x%08x\r\n", CONFIG_OTA_VERSION);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-//  while (1)
-//  {
+  while (1)
+  {
     /* USER CODE END WHILE */
-
+    ymd_ota_process();
+    rt_thread_mdelay(20);
     /* USER CODE BEGIN 3 */
-//  }
+  }
   /* USER CODE END 3 */
 }
 

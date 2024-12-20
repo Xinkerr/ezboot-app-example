@@ -1,11 +1,16 @@
 
 #include "main.h"
+#include <ezboot_config.h>
 #include <stdint.h>
 #include <string.h>
 #include <rtthread.h>
 #include <board.h>
 #include <ringbuffer.h>
 #include <ymodem.h>
+#include <ota_mgr.h>
+#include <norflash.h>
+
+static uint32_t write_offset = OTA_IMAGE_ADDRESS;
 
 static void ymd_putc(uint8_t u8data)
 {
@@ -14,9 +19,6 @@ static void ymd_putc(uint8_t u8data)
 
 static int ymd_read(uint8_t* pdata, int len)
 {
-    // int get_len = ringbuffer_get(&recv_rb, pdata, len);
-    // for(int i=0; i<get_len; i++)
-    //     ymd_putc(pdata[i]);
     int get_len = console_user_rx_get(pdata, len);
     return get_len;
 }
@@ -24,21 +26,21 @@ static int ymd_read(uint8_t* pdata, int len)
 static void ymd_file_handler(char* file, int size)
 {
     rt_kprintf("file:%s\nsize:%d\n", file, size);
-//    for(int i = 0; i < 128; i++)
-//    {
-//        printf("%02x ", file[i]);
-//    }
-//    printf("\n"); 
+    norflash_erase(OTA_IMAGE_ADDRESS, OTA_IMAGE_REGION_SIZE);
 }
 
 static void ymd_data_handler(uint8_t num, uint8_t* pdata, int len)
 {
     rt_kprintf("num:%d\n", num);
+    norflash_write(write_offset, pdata, len);
+    write_offset += len;
 }
 static void ymd_end_handler(void)
 {
     console_user_recv_delegate_set(false);
+    ota_mgr_state_set(OTA_REQUEST);
     rt_kprintf("finish\n");
+    rt_hw_cpu_reset();
 }
 
 static void ymd_error_handler(int err)
@@ -54,6 +56,7 @@ static uint32_t ymd_runtime(void)
 
 void ymd_ota_init(void)
 {
+    norflash_init();
     ymodem_init(ymd_putc, ymd_read, ymd_file_handler,
                 ymd_data_handler, ymd_end_handler,
                 ymd_error_handler, ymd_runtime);
@@ -69,6 +72,7 @@ static rt_err_t yota_start(uint8_t argc, char **argv)
     if(memcmp(argv[1], "-E", strlen(argv[1])) == 0)
     {
         console_user_recv_delegate_set(true);
+        write_offset = OTA_IMAGE_ADDRESS;
         ymodem_start();
         return RT_EOK;
     }
@@ -78,5 +82,5 @@ static rt_err_t yota_start(uint8_t argc, char **argv)
         return RT_EINVAL;
     }
 }
-// MSH_CMD_EXPORT(yota_start, Y-modem OTA start);
+
 MSH_CMD_EXPORT_ALIAS(yota_start, rb, Y-modem OTA start);
