@@ -4,11 +4,11 @@
 #include <stdint.h>
 #include <string.h>
 #include <rtthread.h>
+#include <rthw.h>
 #include <board.h>
 #include <ringbuffer.h>
 #include <ymodem.h>
 #include <ota_mgr.h>
-#include <norflash.h>
 
 static uint32_t write_offset = OTA_IMAGE_ADDRESS;
 
@@ -26,13 +26,13 @@ static int ymd_read(uint8_t* pdata, int len)
 static void ymd_file_handler(char* file, int size)
 {
     rt_kprintf("file:%s\nsize:%d\n", file, size);
-    norflash_erase(OTA_IMAGE_ADDRESS, OTA_IMAGE_REGION_SIZE);
+    ota_mgr_image_erase(OTA_IMAGE_ADDRESS, OTA_IMAGE_REGION_SIZE);
 }
 
 static void ymd_data_handler(uint8_t num, uint8_t* pdata, int len)
 {
     rt_kprintf("num:%d\n", num);
-    norflash_write(write_offset, pdata, len);
+    ota_mgr_image_write(write_offset, pdata, len);
     write_offset += len;
 }
 static void ymd_end_handler(void)
@@ -56,7 +56,7 @@ static uint32_t ymd_runtime(void)
 
 void ymd_ota_init(void)
 {
-    norflash_init();
+    ota_mgr_image_hw_init();
     ymodem_init(ymd_putc, ymd_read, ymd_file_handler,
                 ymd_data_handler, ymd_end_handler,
                 ymd_error_handler, ymd_runtime);
