@@ -82,7 +82,7 @@
           <AfterMake>
             <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name>python ota_generate.py "$L@L.hex"</UserProg1Name>
+            <UserProg1Name>python .\ezboot\script\ota_generate.py  .\ezboot\config $L@L.hex</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\SRC\StdPeriphDriver\inc;.\SRC\CMSIS;.\SRC\Debug;.\rtthread\src;.\drivers;.\rtthread\libcpu\arm\common;.\rtthread\libcpu\arm\cortex-m3;.\rtthread\components\drivers\include;.\rtthread\components\drivers\misc;.\rtthread\components\drivers\serial;.\rtthread\components\finsh;.\rtthread\include;.\rtthread\include\libc;.\rtthread;.\components\sfud\inc;.\components\fal\inc;.\components\fal\porting;.\;.\app\inc;.\components\ymodem;.\ezboot\ezb_flash\inc;.\ezboot\ota_mgr\inc;.\ezboot;.\ezboot\norflash\inc;.\components\nvs\inc</IncludePath>
+              <IncludePath>.\SRC\StdPeriphDriver\inc;.\SRC\CMSIS;.\SRC\Debug;.\rtthread\src;.\drivers;.\rtthread\libcpu\arm\common;.\rtthread\libcpu\arm\cortex-m3;.\rtthread\components\drivers\include;.\rtthread\components\drivers\misc;.\rtthread\components\drivers\serial;.\rtthread\components\finsh;.\rtthread\include;.\rtthread\include\libc;.\rtthread;.\components\sfud\inc;.\components\fal\inc;.\components\fal\porting;.\;.\app\inc;.\components\ymodem;.\ezboot\components\ezb_flash\inc;.\ezboot\components\ota_mgr\inc;.\ezboot\config;.\ezboot\components\norflash\inc;.\components\nvs\inc;.\ezboot\porting\mcu_header</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -819,24 +819,34 @@
           <GroupName>ezboot</GroupName>
           <Files>
             <File>
-              <FileName>ezb_flash.c</FileName>
+              <FileName>norflash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\ezboot\ezb_flash\src\ezb_flash.c</FilePath>
+              <FilePath>.\ezboot\components\norflash\src\norflash.c</FilePath>
             </File>
             <File>
               <FileName>ota_mgr_nvs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\ezboot\ota_mgr\src\ota_mgr_nvs.c</FilePath>
+              <FilePath>.\ezboot\components\ota_mgr\src\ota_mgr_nvs.c</FilePath>
             </File>
             <File>
-              <FileName>norflash.c</FileName>
+              <FileName>ezb_flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\ezboot\norflash\src\norflash.c</FilePath>
+              <FilePath>.\ezboot\porting\ezb_flash\ezb_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>mcu_header.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\ezboot\porting\mcu_header\mcu_header.h</FilePath>
             </File>
             <File>
               <FileName>norflash_spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\ezboot\norflash\src\norflash_spi.c</FilePath>
+              <FilePath>.\ezboot\porting\norflash\norflash_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>ezboot_config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\ezboot\config\ezboot_config.h</FilePath>
             </File>
           </Files>
         </Group>

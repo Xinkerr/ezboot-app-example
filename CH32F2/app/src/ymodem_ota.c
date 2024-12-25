@@ -64,31 +64,41 @@ rt_err_t rym_cat_to_dev(rt_device_t dev)
 
 #ifdef RT_USING_FINSH
 #include <finsh.h>
-void ymdota(void)
+int ymdota_start(uint8_t argc, char **argv)
 {
-    rt_device_t dev;
-    
-    rt_console_set_device("vuart0");
-    finsh_set_device("vuart0");
-
-    dev = rt_device_find("uart1");
-    if (!dev)
+	if(memcmp(argv[1], "-E", strlen(argv[1])) == 0)
     {
-        rt_kprintf("could not find idev\n");
+		rt_err_t res;
+        rt_device_t dev;
+    
+		rt_console_set_device("vuart0");
+		finsh_set_device("vuart0");
+
+		dev = rt_device_find("uart1");
+		if (!dev)
+		{
+			rt_kprintf("could not find idev\n");
+		}
+
+		res = rym_cat_to_dev(dev);
+
+		rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
+		finsh_set_device(RT_CONSOLE_DEVICE_NAME);
+		rt_kprintf("res: %d\r\n", res);
+
+        if(res == RT_EOK)
+            NVIC_SystemReset();
+        else
+            rt_kprintf("abort %d\r\n", abort_step);
     }
-
-    rym_cat_to_dev(dev);
-
-    rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
-    finsh_set_device(RT_CONSOLE_DEVICE_NAME);
-
-        NVIC_SystemReset();
-
-    if(abort_step)
-        rt_kprintf("abort %d\r\n", abort_step);
     else
-        NVIC_SystemReset();
+    {
+        rt_kprintf("Invalid Parameters\n");
+        return RT_EINVAL;
+    }
+	
+    return 0;
 }
 
-MSH_CMD_EXPORT(ymdota, Y-modem download OTA file);
+MSH_CMD_EXPORT_ALIAS(ymdota_start, rb, Y-modem OTA start);
 #endif

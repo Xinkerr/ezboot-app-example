@@ -1,3 +1,22 @@
+/**
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Disclaimer / 免责声明
+ *
+ * This software is provided "as is", without warranty of any kind, express or implied, 
+ * including but not limited to the warranties of merchantability, fitness for a 
+ * particular purpose, or non-infringement. In no event shall the authors or copyright 
+ * holders be liable for any claim, damages, or other liability, whether in an action 
+ * of contract, tort, or otherwise, arising from, out of, or in connection with the 
+ * software or the use or other dealings in the software.
+ *
+ * 本软件按“原样”提供，不附带任何明示或暗示的担保，包括但不限于对适销性、特定用途适用性
+ * 或非侵权的保证。在任何情况下，作者或版权持有人均不对因本软件或使用本软件而产生的任何
+ * 索赔、损害或其他责任负责，无论是合同诉讼、侵权行为还是其他情况。
+ */
+
+#include <string.h>
+#include <ezboot_config.h>
 #include <norflash_spi.h>
 #include <norflash.h>
 
@@ -26,13 +45,15 @@
 #define PAGE_SIZE                                   256
 #endif
 
-#ifdef CONFIG_LOG_LEVEL
-#include #include <mlog.h>
+#if CONFIG_LOG_LEVEL
+#include <mlog.h>
 #define nf_log_hex_i    mlog_hex_i
 #define nf_log_i        mlog_i
+#define nf_log_e		mlog_e
 #else
 #define nf_log_hex_i(...)
 #define nf_log_i(...)
+#define nf_log_e(...)
 #endif
 
 static void norflash_write_enable(void)   
@@ -94,17 +115,45 @@ int norflash_init(void)
     // 初始化SPI总线以用于NOR闪存通信
     ret = norflash_spi_init();
     if(ret != 0)
+	{
+		nf_log_e("spi init failed");
         return -1;
+	}
     
     // 读取NOR闪存的设备ID
     norflash_id = norflash_read_ID();
     if(norflash_id == 0)
+	{
+		nf_log_e("read norflash ID error ");
         return -2;
+	}
     
     // 记录NOR闪存设备ID的日志，以16进制输出
     nf_log_hex_i("norflash ID: ", &norflash_id, sizeof(norflash_id));
     
     return 0; // 初始化成功
+}
+
+static inline int norflash_sector_erase(uint32_t addr)
+{
+    /* 启用flash写操作 */
+    norflash_write_enable();                
+    /* 等待flash准备就绪 */
+    norflash_wait_busy();   
+    /* 选中SPI Flash设备 */
+    norflash_spi_cs(true);                         
+    /* 发送扇区擦除指令 */
+    norflash_spi_transfer(CMD_SECTOR_ERASE);       
+    norflash_spi_transfer((uint8_t)((addr)>>16));  
+    norflash_spi_transfer((uint8_t)((addr)>>8));   
+    norflash_spi_transfer((uint8_t)addr);  
+    /* 取消SPI Flash设备选中 */
+    norflash_spi_cs(false);                  	      
+    /* 等待擦除操作完成 */
+    norflash_wait_busy();   				   		   	
+    /* 禁用flash写操作 */
+    norflash_write_disable();
+    return 0;
 }
 
 /**
@@ -117,32 +166,15 @@ int norflash_init(void)
 int norflash_erase(uint32_t addr, uint32_t size)
 {
     uint32_t i;
-    uint32_t erase_addr;
-    erase_addr = addr;
-    
-    /* 启用flash写操作 */
-    norflash_write_enable();                   
-    /* 等待flash准备就绪 */
-    norflash_wait_busy();   
-
-    /* 选中SPI Flash设备 */
-    norflash_spi_cs(true);                         
+    uint32_t erase_addr = addr;
+                       
     /* 遍历需要擦除的区域 */
     for(i=0; i<size; i+=ERASE_SIZE)
     {
-        addr += i;
-        /* 发送扇区擦除指令 */
-        norflash_spi_transfer(CMD_SECTOR_ERASE);       
-        norflash_spi_transfer((uint8_t)((erase_addr)>>16));  
-        norflash_spi_transfer((uint8_t)((erase_addr)>>8));   
-        norflash_spi_transfer((uint8_t)erase_addr);  
+        /* 扇区擦除 */
+        norflash_sector_erase(erase_addr);
+        erase_addr += ERASE_SIZE;
     }
-    /* 取消SPI Flash设备选中 */
-    norflash_spi_cs(false);                  	      
-    /* 等待擦除操作完成 */
-    norflash_wait_busy();   				   		   	
-    /* 禁用flash写操作 */
-    norflash_write_disable();
     return 0;
 }
 
@@ -238,3 +270,54 @@ int norflash_write(uint32_t addr, const void* buf, uint32_t size)
     return 0; // 表示成功。
 }
 
+#if CONFIG_TEST
+const uint8_t test_buf[8] = {0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88};
+int norflash_test(void)
+{
+    int ret = 0;
+    mlog("[TEST]: norflash checking ......");
+    uint8_t read_buf[8];
+    uint32_t addr = OTA_IMAGE_ADDRESS;
+    uint32_t offset = 0;
+    
+    norflash_erase(addr, OTA_IMAGE_REGION_SIZE);
+    while(offset < OTA_IMAGE_REGION_SIZE)
+    {
+        norflash_write(addr, test_buf, sizeof(test_buf));
+        memset(read_buf, 0, sizeof(read_buf));
+        norflash_read(addr, read_buf, sizeof(read_buf));
+        mlog_d("addr:%d", addr);
+        mlog_hex_d("Read:", read_buf, sizeof(read_buf));
+        if(memcmp(test_buf, read_buf, sizeof(test_buf)) != 0)
+        {
+            ret = -1;
+            goto error;
+        }
+        offset += sizeof(test_buf);
+        addr += sizeof(test_buf);
+    }
+    addr = OTA_IMAGE_ADDRESS;
+    offset = 0;
+    norflash_erase(addr, OTA_IMAGE_REGION_SIZE);
+    while(offset <OTA_IMAGE_REGION_SIZE)
+    {
+        norflash_read(addr, read_buf, sizeof(read_buf));
+        mlog_d("addr:%d", addr);
+        mlog_hex_d("Read:", read_buf, sizeof(read_buf));
+        if(memcmp(test_buf, read_buf, sizeof(test_buf)) == 0)
+        {
+            ret = -2;
+            goto error;
+        }
+        offset += sizeof(test_buf);
+        addr += sizeof(test_buf);
+    }
+
+    mlog("OK\r\n");
+    return ret;
+
+    error:
+        mlog("FAIL %d\r\n", ret);
+        return ret;
+}
+#endif

@@ -4,6 +4,7 @@
 #include <ota_mgr.h>
 #include <ezboot_config.h>
 #include <stdlib.h>
+#include <fal.h>
 
 
 int main( void )
@@ -12,6 +13,8 @@ int main( void )
     rt_kprintf( "SystemClk:%d\r\n", SystemCoreClock );
     rt_kprintf( "ChipID:%08x\r\n", DBGMCU_GetCHIPID() );
     rt_kprintf("Version: %u.%u\r\n", CONFIG_OTA_VERSION >> 16, CONFIG_OTA_VERSION & 0x0000ffff);
+
+    fal_init();
 
 	ota_mgr_state_t state = ota_mgr_state_get();
 	rt_kprintf("ota state:%d\r\n", state);

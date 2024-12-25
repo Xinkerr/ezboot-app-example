@@ -52,11 +52,8 @@ extern struct fal_flash_dev nor_flash0;
 
 #define FAL_PART_TABLE                                                               \
 {                                                                                    \
-    {FAL_PART_MAGIC_WORD,       "boot",     "ch32_onchip",  0,          12*1024, 0}, \
     {FAL_PART_MAGIC_WORD,       "ota_mgr",  FAL_OTA_MGR_DEV_NAME,  FAL_OTA_MGR_ADDR,     OTA_MGR_REGION_SIZE, 0}, \
     {FAL_PART_MAGIC_WORD,       "app",      "ch32_onchip",  FAL_APP_ADDR,    APP_REGION_SIZE, 0}, \
-    {FAL_PART_MAGIC_WORD,       "nvs",      "ch32_onchip",  FAL_APP_ADDR+APP_REGION_SIZE,    2*4096, 0}, \
-    {FAL_PART_MAGIC_WORD,       "FlashDB",  "norflash0",    0,          16*1024, 0}, \
     {FAL_PART_MAGIC_WORD,       "ota_image", FAL_OTA_IMAGE_DEV_NAME,   FAL_OTA_IMAGE_ADDR,  OTA_IMAGE_REGION_SIZE, 0}, \
 }
 #endif /* FAL_PART_HAS_TABLE_CFG */
