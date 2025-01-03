@@ -337,7 +337,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_HAL_DRIVER,STM32F072xB,__VTOR_PRESENT=1</Define>
+              <Define>USE_HAL_DRIVER,STM32F072xB</Define>
               <Undefine></Undefine>
               <IncludePath>../Core/Inc;../Drivers/STM32F0xx_HAL_Driver/Inc;../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F0xx/Include;../Drivers/CMSIS/Include;../RT-Thread;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/components/finsh/inc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/include/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/msvc/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/include/libc/extension/fcntl/octal/;../Middlewares/Third_Party/RealThread_RTOS_RT-Thread/bsp/_template/cubemx_config;../components/ringbuffer;../components/ymodem;../ezboot/components/ezb_flash/inc;../ezboot/components/norflash/inc;../ezboot/components/ota_mgr/inc;../ezboot/config;../ezboot/porting/mcu_header</IncludePath>
             </VariousControls>
