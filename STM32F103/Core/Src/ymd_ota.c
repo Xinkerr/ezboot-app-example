@@ -26,19 +26,19 @@ static int ymd_read(uint8_t* pdata, int len)
 static void ymd_file_handler(char* file, int size)
 {
     rt_kprintf("file:%s\nsize:%d\n", file, size);
-    // ota_mgr_image_erase(OTA_IMAGE_ADDRESS, OTA_IMAGE_REGION_SIZE);
+    ota_mgr_image_erase(OTA_IMAGE_ADDRESS, OTA_IMAGE_REGION_SIZE);
 }
 
 static void ymd_data_handler(uint8_t num, uint8_t* pdata, int len)
 {
     rt_kprintf("num:%d\n", num);
-    // ota_mgr_image_write(write_offset, pdata, len);
+    ota_mgr_image_write(write_offset, pdata, len);
     write_offset += len;
 }
 static void ymd_end_handler(void)
 {
     console_user_recv_delegate_set(false);
-    // ota_mgr_state_set(OTA_REQUEST);
+    ota_mgr_state_set(OTA_REQUEST);
     rt_kprintf("finish\n");
     rt_hw_cpu_reset();
 }
