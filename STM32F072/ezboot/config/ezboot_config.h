@@ -36,8 +36,8 @@
 
 //OTA image on chip
 //  // application
-//  #define APP_ADDRESS                           ((uint32_t)(0x08003800))
-//  #define APP_REGION_SIZE                       ((uint32_t)(25*1024))
+//  #define APP_ADDRESS                           ((uint32_t)(0x08005000))
+//  #define APP_REGION_SIZE                       ((uint32_t)(22*1024))
 //  // OTA manager
 //  #define OTA_MGR_EXTERN_FLASH                  0
 //  #define OTA_MGR_REGION_SIZE                   ((uint32_t)0x800)
@@ -50,8 +50,8 @@
 
 //OTA image on extern flash
 // application
-#define APP_ADDRESS                             ((uint32_t)(0x08004000))
-#define APP_REGION_SIZE                         ((uint32_t)48*1024)
+#define APP_ADDRESS                             ((uint32_t)(0x08005000))
+#define APP_REGION_SIZE                         ((uint32_t)44*1024)
 // OTA manager
 #define OTA_MGR_EXTERN_FLASH                    1
 #define OTA_MGR_DATA_ADDRESS                    ((uint32_t)(0*1024))
